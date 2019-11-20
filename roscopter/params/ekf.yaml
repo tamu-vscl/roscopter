@@ -14,6 +14,7 @@ odom_topic: ""
 gnss_topic: ""
 ublox_gnss_topic: ""
 inertial_sense_gnss_topic: "/ins/gps"
+vector_nav_gnss_topic: ""
 
 start_time: 0
 duration: 1000

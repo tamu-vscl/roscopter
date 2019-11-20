@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(roscopter)
 
+add_compile_options(-std=c++17)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -16,6 +18,16 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(Eigen3 REQUIRED)
 find_package(yaml-cpp REQUIRED)
+
+find_package(vector_nav QUIET)
+
+if (${vector_nav_FOUND})
+    message(WARNING "found vector_nav library")
+    add_definitions(-DVECTOR_NAV)
+else()
+    message(WARNING "Did NOT find vector nav library")
+endif()
+
 find_package(inertial_sense QUIET)
 
 if (${inertial_sense_FOUND})
@@ -51,8 +63,8 @@ add_definitions(-DROSCOPTER_DIR="${CMAKE_CURRENT_LIST_DIR}")
 ## Build ##
 ###########
 
-include_directories(include 
-  ${EIGEN3_INCLUDE_DIRS} 
+include_directories(include
+  ${EIGEN3_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
   )
 message (STATUS "catkin include dirs" ${catkin_INCLUDE_DIRS})

@@ -61,8 +61,10 @@ class WaypointManager():
             rospy.spin()
 
 
-    def addWaypointCallback(req):
+    def addWaypointCallback(self,req):
+	self.waypoint_list.append([req.x,req.y,req.z,0.0])
         print("addwaypoints")
+	return True
 
     def removeWaypointCallback(req):
         print("remove Waypoints")

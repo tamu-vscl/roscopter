@@ -71,6 +71,9 @@ void EKF_ROS::initROS()
 #ifdef INERTIAL_SENSE
   is_gnss_sub_ = nh_.subscribe("is_gnss", 10, &EKF_ROS::gnssCallbackInertialSense, this);
 #endif
+#ifdef VECTOR_NAV
+  vn_gnss_sub_ = nh_.subscribe("vn_gnss", 10, &EKF_ROS::gnssCallbackVectorNav, this);
+#endif
 
   ros_initialized_ = true;
 }
@@ -165,8 +168,10 @@ void EKF_ROS::publishEstimates(const sensor_msgs::ImuConstPtr &msg)
     is_flying_ = ekf_.isFlying();
     if (is_flying_)
     {
-      is_flying_msg_.data = is_flying_;
-      is_flying_pub_.publish(is_flying_msg_);
+      std_msgs::Bool fly_msg;
+      fly_msg.data = is_flying_;
+      is_flying_pub_.publish(fly_msg);
+      std::cout << fly_msg.data << std::endl;
     }
   }
 }
@@ -376,7 +381,31 @@ void EKF_ROS::gnssCallbackInertialSense(const inertial_sense::GPSConstPtr &msg)
 }
 #endif
 
-
+#ifdef VECTOR_NAV
+void EKF_ROS::gnssCallbackVectorNav(const rosflight_msgs::GNSS &msg)
+{
+  if (msg.fix == 2
+      || msg.fix == 3)// change to enum values later
+  {
+    rosflight_msgs::GNSS rf_msg;
+    rf_msg.header.stamp = msg.header.stamp;
+    rf_msg.position[0] = msg.position[0];
+    rf_msg.position[1] = msg.position[1];
+    rf_msg.position[2] = msg.position[2];
+    rf_msg.velocity[0] = msg.velocity[0];
+    rf_msg.velocity[1] = msg.velocity[1];
+    rf_msg.velocity[2] = msg.velocity[2];
+    rf_msg.horizontal_accuracy = msg.horizontal_accuracy;
+    rf_msg.vertical_accuracy = msg.vertical_accuracy;
+    rf_msg.speed_accuracy = msg.speed_accuracy;
+    gnssCallback(boost::make_shared<rosflight_msgs::GNSS>(rf_msg));
+  }
+  else
+  {
+    ROS_WARN_THROTTLE(1., "Inertial Sense GPS not in fix");
+  }
+}
+#endif
 
 
 }

@@ -59,6 +59,10 @@
 #include "inertial_sense/GPS.h"
 #endif
 
+//#ifdef VECTOR_NAV
+//#include "vector_nav/GPS.h"
+//#endif
+
 namespace roscopter::ekf
 {
 class EKF_ROS
@@ -87,7 +91,10 @@ public:
   void gnssCallbackInertialSense(const inertial_sense::GPSConstPtr& msg);
 #endif
 
-  
+#ifdef VECTOR_NAV
+  void gnssCallbackVectorNav(const rosflight_msgs::GNSS& msg);
+#endif
+
 private:
   EKF ekf_;
 
@@ -121,6 +128,10 @@ private:
   ros::Subscriber is_gnss_sub_;
 #endif
 
+#ifdef VECTOR_NAV
+  ros::Subscriber vn_gnss_sub_;
+#endif
+
   std::mutex ekf_mtx_;
 
   bool imu_init_ = false;
@@ -130,14 +141,14 @@ private:
   bool use_pose_;
 
   bool ros_initialized_ = false;
-  
+
   bool is_flying_ = false;
   bool armed_ = false;
   ros::Time time_took_off_;
   ros::Time start_time_;
 
   Vector6d imu_;
-  
+
   Matrix6d imu_R_;
   Matrix6d mocap_R_;
   double baro_R_;
@@ -152,7 +163,3 @@ private:
 };
 
 }
-
-
-
-

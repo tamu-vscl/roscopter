@@ -31,6 +31,7 @@ void ROSbagParser::loadParams()
   get_yaml_node("gnss_topic", param_filename_, gnss_topic_);
   get_yaml_node("ublox_gnss_topic", param_filename_, ublox_gnss_topic_);
   get_yaml_node("inertial_sense_gnss_topic", param_filename_, inertial_sense_gnss_topic_);
+  get_yaml_node("vector_nav_gnss_topic",param_filename_, vector_nav_gnss_topic_);
   get_yaml_node("start_time", param_filename_, start_);
   get_yaml_node("duration", param_filename_, duration_);
 }
@@ -111,6 +112,10 @@ void ROSbagParser::parseBag()
         else if (m.isType<inertial_sense::GPS>() && m.getTopic().compare(inertial_sense_gnss_topic_) == 0)
           ekf_.gnssCallbackInertialSense(m.instantiate<inertial_sense::GPS>());
 #endif
+// #ifdef VECTOR_NAV
+//         else if (m.isType<rosflight_msgs::GNSS>() && m.getTopic().compare(vector_nav_gnss_topic_) == 0)
+//           ekf_.gnssCallbackVectorNav(m.instantiate<rosflight_msgs::GNSS>());
+// #endif
     }
     prog.finished();
     cout << endl;

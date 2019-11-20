@@ -4,9 +4,7 @@
 
 using namespace Eigen;
 
-namespace roscopter
-{
-namespace ekf
+namespace roscopter::ekf
 {
 
 const dxMat EKF::I_BIG = dxMat::Identity();
@@ -309,6 +307,7 @@ void EKF::rangeCallback(const double& t, const double& z, const double& R)
 
 void EKF::gnssCallback(const double &t, const Vector6d &z, const Matrix6d &R)
 {
+
   if (!ref_lla_set_)
     return;
 
@@ -374,7 +373,7 @@ void EKF::baroUpdate(const meas::Baro &z)
   using Vector1d = Eigen::Matrix<double, 1, 1>;
 
   // // From "Small Unmanned Aircraft: Theory and Practice" eq 7.8
-  const double g = 9.80665; // m/(s^2) gravity 
+  const double g = 9.80665; // m/(s^2) gravity
   const double R = 8.31432; // universal gas constant
   const double M = 0.0289644; // kg / mol. molar mass of Earth's air
 
@@ -623,5 +622,4 @@ void EKF::checkIsFlying()
 }
 
 
-}
 }

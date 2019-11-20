@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <launch>
-  <rosparam command="load" file="$(find mocap_controller)/param/vi_ekf_gains.yaml" ns="vi_ekf_node"/>
+  <!-- <rosparam command="load" file="$(find mocap_controller)/param/vi_ekf_gains.yaml" ns="vi_ekf_node"/>
   <rosparam command="load" file="$(find mocap_controller)/param/vi_ekf_drone.yaml" ns="vi_ekf_node"/>
 
   <node name="vi_ekf_node" type="vi_ekf_node" pkg="vi_ekf" output="screen">
     <remap from="imu" to="/imu/data"/>
     <remap from="truth/pose" to="/vrpn_client_node/planck/pose"/>
-  </node>
+  </node> -->
 
   <!--Note: You should run the motion capture node on the motion capture computer-->
   <!--motion capture-->
@@ -17,22 +17,40 @@
     <!--<remap from="vrpn/planck/pose" to="truth/pose"/>-->
     <!--</node>-->
 
+  <!-- Start Vector Nav -->
+  <include file="$(find vector_nav)/launch/vector_nav.launch"/>
+
   <!-- FCU communication -->
-  <node name="rosflight_io" pkg="rosflight" type="rosflight_io" output="screen"/>
+  <node name="rosflight_io" pkg="rosflight" type="rosflight_io" output="screen">
+    <param name="port" value="/dev/ttyACM0"/>
+  </node>
 
   <!-- Load common parameters -->
   <rosparam command="load" file="$(find roscopter)/params/F450.yaml"/>
 
   <!-- PID Position Controller -->
-  <node name="controller" pkg="roscopter" type="controller">
-    <remap from="estimate" to="odom"/>
+  <node name="controller" pkg="roscopter" type="controller" output="screen">
+    <!-- <remap from="odom" to="estimate"/> -->
     <!-- <remap from="estimate" to="estimate"/> -->
+  </node>
+
+  <node name="estimator" pkg="roscopter" type="ekf_node" output="screen">
+    <param name="param_filename" value="$(find roscopter)/params/ekf.yaml"/>
+    <!--Inputs-->
+    <remap from="imu" to="imu/data"/>
+    <!--<remap from="pose" to="pose"/>-->
+    <!-- <remap from="reference" to="ground_truth/odometry/NED_throttled"/> -->
+    <remap from="gnss" to="gps/data"/>
+    <remap from="baro" to="baro/data"/>
+    <!--Outputs-->
+    <!-- <remap from="is_flying" to="not_for_sim"/> -->
+    <remap from="odom" to="estimate"/>
   </node>
 
   <!-- Waypoint Manager -->
   <node name="waypoint_manager" pkg="roscopter" type="waypoint_manager.py" output="screen">
-    <remap from="waypoint" to="high_level_command"/>
-    <remap from="state" to="odom"/>
+    <!-- <remap from="waypoint" to="high_level_command"/> -->
+    <!-- <remap from="state" to="odom"/> -->
     <!-- <remap from="state" to="estimate"/> -->
   </node>
 
