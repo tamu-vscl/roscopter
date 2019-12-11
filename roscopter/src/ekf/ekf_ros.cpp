@@ -402,7 +402,7 @@ void EKF_ROS::gnssCallbackVectorNav(const rosflight_msgs::GNSS &msg)
   }
   else
   {
-    ROS_WARN_THROTTLE(1., "Inertial Sense GPS not in fix");
+    ROS_WARN_THROTTLE(1., "Vector Nav GPS not in fix");
   }
 }
 #endif
