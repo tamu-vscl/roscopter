@@ -40,7 +40,8 @@ waypoint_manager: {
 
 waypoints:
   [[-2, 3, 4, 3.9],
-   [0,0,0,-3.14]], # North, East, Altitude, Yaw (radians)
+   [0,0,0,-3.14],
+   [2,-3,6, 3.8]], # North, East, Altitude, Yaw (radians)
 
 threshold: 0.1,
 cyle: True

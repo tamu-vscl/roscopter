@@ -7,7 +7,7 @@
 bag_name: "/home/mmmfarrell/magicc/roscopter_ws/src/bags/rock_canyon_updown.bag"
 status_topic: "/status"
 imu_topic: "/imu/data"
-baro_topic: "/serial/baro"
+baro_topic: "/baro/data"
 range_topic: "/serial/laser"
 pose_topic: ""
 odom_topic: ""

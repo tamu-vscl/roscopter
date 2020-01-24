@@ -181,6 +181,7 @@ void EKF_ROS::imuCallback(const sensor_msgs::ImuConstPtr &msg)
   if (start_time_.sec == 0)
   {
     start_time_ = msg->header.stamp;
+    std::cout << "Recieved initial IMU message\n";
   }
 
   Vector6d z;
@@ -316,7 +317,6 @@ void EKF_ROS::gnssCallback(const rosflight_msgs::GNSSConstPtr &msg)
   Matrix6d Sigma_ecef;
   Sigma_ecef << R_e2n.transpose() * Sigma_diag_NED.head<3>().asDiagonal() * R_e2n, Matrix3d::Zero(),
                 Matrix3d::Zero(), R_e2n.transpose() *  Sigma_diag_NED.tail<3>().asDiagonal() * R_e2n;
-
   if (!ekf_.refLlaSet())
   {
     // set ref lla to first gps position
@@ -324,6 +324,8 @@ void EKF_ROS::gnssCallback(const rosflight_msgs::GNSSConstPtr &msg)
     // Convert radians to degrees
     ref_lla.head<2>() *= 180. / M_PI;
     ekf_.setRefLla(ref_lla);
+    //  std::cout << "Set reference lat, lon, alt" << std::endl;
+    // std::cout << ref_lla[0] << ref_lla[1] << ref_lla[2] << std::endl;
   }
 
   if (start_time_.sec == 0)
